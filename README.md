@@ -141,7 +141,94 @@ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 10.45.0.0/16
 
 
 
+# :large_blue_circle: **Soal 3** :large_blue_circle: 
+Client yang melalui Switch1 mendapatkan range IP dari [prefix IP].1.50 - [prefix IP].1.88 dan [prefix IP].1.120 - [prefix IP].1.155 (3)
 
+### :triangular_flag_on_post: **Jawaban:**
+Konfigurasi kepada DHCP Relay pada Ostania
+Lakukan konfigurasi pada Ostania dengan melakukan edit file /etc/default/isc-dhcp-relay dengan konfigurasi berikut
+
+### :rocket: **Ostania**
+
+```# Defaults for isc-dhcp-relay initscript
+# sourced by /etc/init.d/isc-dhcp-relay
+# installed at /etc/default/isc-dhcp-relay by the maintainer scripts
+#
+# This is a POSIX shell fragment
+#
+# What servers should the DHCP relay forward requests to?
+SERVERS="10.45.2.4"
+# On what interfaces should the DHCP relay (dhrelay) serve DHCP requests?
+INTERFACES="eth1 eth3 eth2"
+# Additional options that are passed to the DHCP relay daemon?
+OPTIONS=""
+```
+### :rocket: **Westalis**
+Konfigurasi DHCP Server pada westalis
+
+```
+# Defaults for isc-dhcp-server initscript
+# sourced by /etc/init.d/isc-dhcp-server
+# installed at /etc/default/isc-dhcp-server by the maintainer scripts
+#
+# This is a POSIX shell fragment
+#
+# Path to dhcpd's config file (default: /etc/dhcp/dhcpd.conf).
+#DHCPD_CONF=/etc/dhcp/dhcpd.conf
+# Path to dhcpd's PID file (default: /var/run/dhcpd.pid).
+#DHCPD_PID=/var/run/dhcpd.pid
+# Additional options to start dhcpd with.
+#       Don't use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
+#OPTIONS=""
+# On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
+#       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+INTERFACES="eth0"
+```
+
+Kemudian lakukan restart pada dhcp server dengan comand 
+```service isc-dhcp-server restart```
+# :large_blue_circle: **Soal 4** :large_blue_circle: 
+Client yang melalui Switch3 mendapatkan range IP dari [prefix IP].3.10 - [prefix IP].3.30 dan [prefix IP].3.60 - [prefix IP].3.85 (4)
+### :triangular_flag_on_post: **Jawaban:**
+masukan subnet
+```
+subnet 10.45.2.0 netmask 255.255.255.0 {
+}
+subnet 10.45.1.0 netmask 255.255.255.0 {
+    range  10.45.1.50 10.45.1.88;
+    range  10.45.1.120 10.45.1.155;
+    option routers 10.45.1.1;
+    option broadcast-address 10.45.1.255;
+    option domain-name-servers 10.45.2.2;
+    default-lease-time 360;
+    max-lease-time 7200;
+}
+```
+Lakukan konfigurasi pada Westalis dengan melakukan edit file /etc/default/isc-dhcp-relay dengan konfigurasi berikut
+### :rocket: **Westalis**
+```
+subnet 10.45.2.0 netmask 255.255.255.0 {
+}
+subnet 10.45.1.0 netmask 255.255.255.0 {
+    range  10.45.1.50 10.45.1.88;
+    range  10.45.1.120 10.45.1.155;
+    option routers 10.45.1.1;
+    option broadcast-address 10.45.1.255;
+    option domain-name-servers 10.45.2.2;
+    default-lease-time 360;
+    max-lease-time 7200;
+}
+
+subnet 10.45.3.0 netmask 255.255.255.0 {
+    range  10.45.3.10 10.45.3.30;
+    range  10.45.3.60 10.45.3.85;
+    option routers 10.45.3.1;
+    option broadcast-address 10.45.3.255;
+    option domain-name-servers 10.45.2.2;
+    default-lease-time 360;
+    max-lease-time 7200;
+}
+```
 
 
 
