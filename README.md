@@ -11,7 +11,7 @@ Jarkom-Modul-3-ITB01-2022
 
 
 # :large_blue_circle: **Topologi Jaringan** :large_blue_circle: 
-<img src="./img/topologi.png">
+<img src="./img/topologi.jpg">
 <br>
 
 # :large_blue_circle: **Soal 1** :large_blue_circle: 
